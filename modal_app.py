@@ -19,7 +19,7 @@ dependencies = project["project"]["dependencies"] + project["dependency-groups"]
 image = (modal.Image.debian_slim(python_version="3.12")
          .uv_pip_install(*dependencies)
          .add_local_file(Path(__file__).with_name("pyproject.toml"), "/root/pyproject.toml"))
-for module in ("config", "pace", "train"):
+for module in ("config", "pace", "policy", "train"):
     image = image.add_local_file(Path(__file__).with_name(f"{module}.py"), f"/root/{module}.py")
 
 
