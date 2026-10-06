@@ -1,5 +1,7 @@
 # XRiskMan: Teaching an autoregressive agent to "Pace The Frontier"
 
+![Picture 1](./pic0.png)
+
 Recentely, the great venture capital firm Paradigm released an article and acompannying game, "The Game Theory of AI Pacing". It is inspired by a paper authored by Drew Fudenberg and Andrew Ko.
 In one sentence, there exists k-players, each player has a choice of whether to Accelerate or not, and whether to publicize or not (the latter is removed by Paradigm's version).
 
