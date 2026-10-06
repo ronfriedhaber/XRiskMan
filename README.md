@@ -1,16 +1,15 @@
-# XRiskMan: Teaching an autoregressive agent to "Pace The Frontier"
+# XRiskMan: Teaching an Autoregressive Agent to “Pace the Frontier”
 
-![Picture 1](./pic0.png)
+![PACE game illustration](./pic0.png)
 
-Recentely, the great venture capital firm Paradigm released an article and acompannying game, "The Game Theory of AI Pacing". It is inspired by a paper authored by Drew Fudenberg and Andrew Ko.
-In one sentence, there exists k-players, each player has a choice of whether to Accelerate or not, and whether to publicize or not (the latter is removed by Paradigm's version).
+Paradigm recently released an article and accompanying game, [“The Game Theory of AI Pacing”](https://www.paradigm.xyz/research/pace/), inspired by work from Drew Fudenberg and Andrew K. In the game, each of *k* players chooses whether to accelerate and whether to share information; Paradigm’s version omits the sharing choice.
 
-Inspired by general rationalist litreture I set out to train an autoregressive agent, using a combination of imitation training and RL (PPO) to pareto-optimally navigate the P(doom) landscape. The following is a preliminary result.
+Inspired by the rationalist literature, this project trains an autoregressive agent with imitation learning and reinforcement learning (PPO) to navigate the trade-off between capability and safety. The results are preliminary.
 
 ## Model
 
-Input: **[BS, 32, 16]** — the current step and 31 previous steps, each represented
-by 16 numbers (Note, not a linguistic token):
+Input: **[BS, 32, 16]** — the current step and the previous 31 steps, each represented
+by 16 numeric features (these are not linguistic tokens):
 
 | Indices | Features, in order |
 |---|---|
@@ -19,8 +18,15 @@ by 16 numbers (Note, not a linguistic token):
 | 8–11 | Opponent deployment, cash, visible research, research-visible flag |
 | 12–15 | Own research-on flag, own sharing, opponent sharing, own stopping distance |
 
-## Training - Imitation
-## Training - PPO
+## Training: Imitation
+
+The agent first imitates a cautious hand-coded policy, which provides a stable
+initial policy for reinforcement learning.
+
+## Training: PPO
+
+The initialized policy is then optimized with Proximal Policy Optimization (PPO)
+against the environment reward.
 
 ## Building
 
