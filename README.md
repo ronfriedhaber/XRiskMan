@@ -21,3 +21,13 @@ by 16 numbers (Note, not a linguistic token):
 ## Training - PPO
 
 ## Building
+
+| Section | Options (default) |
+|---|---|
+| Environment | `dt=1/60`, `decision_dt=.1`, `duration=90`, `delay=2`, `acceleration=.62`, `deceleration=.62`, `initial_safety=12`, `safety_flat_until=18`, `safety_plateaus=true`, `max_hazard=.24` |
+| Model | `context=32`, `width=64`, `heads=4`, `layers=2`, `input_dim=16` |
+| Run | `steps=8388608`, `seed=0`, `out=runs/pace`, `device=auto`, `threads=4`, `envs=32` |
+| Imitation | `imitation_updates=5000`, `imitation_lr=3e-4` |
+| PPO | `rollout=1024`, `epochs=4`, `batch=256`, `lr=3e-4`, `adam_eps=1e-5`, `gamma=1`, `gae_lambda=1`, `clip_ratio=.2`, `value_coef=.5`, `entropy_coef=.01`, `max_grad_norm=.5`, `target_kl=.03` |
+| Evaluation | `eval_episodes=128`, `eval_every=5` |
+| Reward | `alpha=0`, `beta=0` |
