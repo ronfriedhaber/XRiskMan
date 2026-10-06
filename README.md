@@ -31,3 +31,7 @@ by 16 numbers (Note, not a linguistic token):
 | PPO | `rollout=1024`, `epochs=4`, `batch=256`, `lr=3e-4`, `adam_eps=1e-5`, `gamma=1`, `gae_lambda=1`, `clip_ratio=.2`, `value_coef=.5`, `entropy_coef=.01`, `max_grad_norm=.5`, `target_kl=.03` |
 | Evaluation | `eval_episodes=128`, `eval_every=5` |
 | Reward | `alpha=0`, `beta=0` |
+
+```sh
+./train_and_eval_full.py --config default.json --alpha 0.5 --beta 0.1
+```

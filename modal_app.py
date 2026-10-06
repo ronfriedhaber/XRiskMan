@@ -1,6 +1,6 @@
 """Launch explicitly: uv run --group modal modal run modal_app.py --steps 1000000."""
 import json
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from typing import Optional
 import os
 from pathlib import Path
@@ -30,7 +30,7 @@ def train_remote(experiment: dict):
     from train import main
     import wandb
 
-    run = uuid.uuid4().hex
+    run = Path(experiment["training"]["out"]).name
     try:
         # W&B reads WANDB_API_KEY (and optional WANDB_ENTITY) from Modal's Secret.
         with wandb.init(project=os.environ.get("WANDB_PROJECT", "pace-rl"),
@@ -48,7 +48,10 @@ def train_remote(experiment: dict):
 def launch(config: str = "", steps: Optional[int] = None, seed: Optional[int] = None,
            alpha: Optional[float] = None, beta: Optional[float] = None):
     settings = asdict(ExperimentConfig.read(config or None))
+    run = Path(settings["training"]["out"]).name if settings["training"]["out"].startswith("runs/") else uuid.uuid4().hex
     for section, changes in (("training", {"steps": steps, "seed": seed}), ("reward", {"alpha": alpha, "beta": beta})):
         settings[section].update({k: v for k, v in changes.items() if v is not None})
     experiment = ExperimentConfig.from_dict(settings)  # Validate before starting GPU work.
+    experiment = ExperimentConfig(experiment.environment, experiment.model,
+                                  replace(experiment.training, out=f"runs/{run}"), experiment.reward)
     print(json.dumps(train_remote.remote(asdict(experiment)), indent=2))

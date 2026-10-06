@@ -1,0 +1,6 @@
+{
+  "environment": {"dt": 0.016666666666666666, "decision_dt": 0.1, "duration": 90.0, "delay": 2.0, "acceleration": 0.62, "deceleration": 0.62, "initial_safety": 12.0, "safety_flat_until": 18.0, "safety_plateaus": true, "max_hazard": 0.24},
+  "model": {"context": 32, "width": 64, "heads": 4, "layers": 2, "input_dim": 16},
+  "training": {"steps": 8388608, "seed": 0, "out": "runs/pace", "device": "auto", "threads": 4, "envs": 32, "imitation_updates": 5000, "imitation_lr": 0.0003, "rollout": 1024, "epochs": 4, "batch": 256, "lr": 0.0003, "adam_eps": 0.00001, "gamma": 1.0, "gae_lambda": 1.0, "clip_ratio": 0.2, "value_coef": 0.5, "entropy_coef": 0.01, "max_grad_norm": 0.5, "target_kl": 0.03, "eval_episodes": 128, "eval_every": 5},
+  "reward": {"alpha": 0.0, "beta": 0.0}
+}
