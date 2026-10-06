@@ -19,7 +19,7 @@ HTML = r"""<!doctype html>
 body{max-width:900px;margin:32px auto;padding:0 18px;color:#222;background:#fff;font:14px ui-monospace,monospace}
 header,nav{display:flex;gap:12px;align-items:center;flex-wrap:wrap}header{justify-content:space-between}h1{font:inherit;margin:0}a{color:inherit}
 #objective{font:clamp(16px,3vw,23px) Georgia,serif;margin:28px 0}button,select,input{font:inherit;color:inherit;background:none;border:1px solid #ddd;padding:5px}input{width:112px}
- .chart{width:100%;height:360px;margin:20px 0 8px}.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.mini div{height:120px}p{line-height:1.8}small{color:#777}#values{white-space:pre-wrap}#meta{overflow-wrap:anywhere}.safety{color:#00835b}
+ .chart{width:100%;height:360px;margin:20px 0 8px}.mini{display:block}.mini div{width:100%;height:180px;margin-top:12px}p{line-height:1.8}small{color:#777}#values{white-space:pre-wrap}#meta{overflow-wrap:anywhere}.safety{color:#00835b}
 </style>
 <header><h1><a href="https://www.paradigm.xyz/research/pace/">PACE</a> / πθ</h1><small>local simulation</small></header>
 <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -27,7 +27,7 @@ header,nav{display:flex;gap:12px;align-items:center;flex-wrap:wrap}header{justif
 <nav><label>π <select id="mode" aria-label="Policy"><option>PPO</option></select></label><label>seed <input id="seed" type="number" min="0" max="4294967295" step="1" value="2147483648"></label><button id="restart">↺ Reset</button><button id="play" disabled>Play</button><select id="speed" aria-label="Playback speed"><option value="1">1×</option><option value="4">4×</option><option value="10">10×</option></select></nav>
 <div id="graph" class="chart" aria-label="Agent deployment d1, opponent deployment d2, and safety s over time"></div>
 <small>― d₁ agent &nbsp; ┄ d₂ opponent &nbsp; <span class="safety">― s safety</span></small>
-<div class="mini"><div id="cash1"></div><div id="cash2"></div><div id="gap"></div></div>
+<div class="mini"><div id="gap"></div></div>
 <p id="values" role="status">Loading…</p><small id="meta"></small>
 <script>
 const $=id=>document.getElementById(id);let charts={};
@@ -39,12 +39,15 @@ async function api(path,data={}){
 function draw(){
   const times=points.map(p=>p.t), lines={d1:points.map(p=>p.deployed[0]),d2:points.map(p=>p.deployed[1]),s:points.map(p=>p.safety),c1:points.map(p=>p.cash[0]),c2:points.map(p=>p.cash[1]),gap:points.map(p=>p.cash[0]-p.cash[1])};
   function chart(id,title,series,height){
-    if(!charts[id]) charts[id]=Highcharts.chart(id,{chart:{height,animation:false},title:{text:title,style:{fontSize:height<150?'11px':'14px'}},credits:{enabled:false},legend:{enabled:height>150},xAxis:{visible:false},yAxis:{title:{text:null}},plotOptions:{series:{animation:false,marker:{enabled:false}}},series:series.map(x=>({name:x[0],data:x[1].map((v,i)=>[times[i],v]),color:x[2],dashStyle:x[3]||'Solid'}))});
+    if(!charts[id]) charts[id]=Highcharts.chart(id,{chart:{height,animation:false,backgroundColor:'#fff'},title:{text:title,style:{fontSize:height<150?'11px':'14px'}},credits:{enabled:false},legend:{enabled:height>150},xAxis:{visible:false},yAxis:{min:id==='graph'?0:-10,max:id==='graph'?50:10,gridLineWidth:0,plotLines:id==='gap'?[{value:0,color:'#999',width:1,dashStyle:'Dot',zIndex:3}]:[],title:{text:null}},plotOptions:{series:{animation:false,marker:{enabled:false}}},series:series.map(x=>({name:x[0],data:x[1].map((v,i)=>[times[i],v]),color:x[2],dashStyle:x[3]||'Solid'}))});
     else series.forEach((x,i)=>charts[id].series[i].setData(x[1].map((v,j)=>[times[j],v]),false));
     charts[id]?.redraw();
   }
   chart('graph','capability / safety',[['d₁',lines.d1,'#222'],['d₂',lines.d2,'#999','Dash'],['s',lines.s,'#00835b']],360);
-  chart('cash1','C₁',[['agent',lines.c1,'#222']],120);chart('cash2','C₂',[['opponent',lines.c2,'#999']],120);chart('gap','ΔC',[['agent − opponent',lines.gap,'#00835b']],120);
+  charts.graph.yAxis[0].setExtremes(0, Math.max(50, Math.max(...points.flatMap(p=>[p.safety,...p.deployed]))*1.1), false);
+  chart('gap','ΔC',[['agent − opponent',lines.gap,'#00835b']],120);
+  const cashMin=Math.min(...lines.gap), cashMax=Math.max(...lines.gap), pad=Math.max(1,(cashMax-cashMin)*.1);
+  charts.gap.yAxis[0].setExtremes(cashMin-pad,cashMax+pad,false);
   const gap=s.cash[0]-s.cash[1], outcome=s.crashed?'crash':s.done?(gap>0?'win':gap<0?'loss':'tie'):s.settling?'settling':`u=${s.action%2}, share=${Number(s.action>=2)}`;
   $('objective').textContent=`maxπ E[(C₁(T) − ${s.alpha}C₂(T))/20 − ${s.beta}𝟙crash]`;
   $('values').textContent=`t = ${s.t.toFixed(1)}s   C₁ = ${s.cash[0].toFixed(2)}   C₂ = ${s.cash[1].toFixed(2)}   ΔC = ${gap.toFixed(2)} ($B)\n${outcome}`;
