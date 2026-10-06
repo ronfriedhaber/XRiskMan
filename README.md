@@ -2,7 +2,7 @@
 
 ![PACE game illustration](./pic0.png)
 
-Paradigm recently released an article and accompanying game, [“The Game Theory of AI Pacing”](https://www.paradigm.xyz/research/pace/), inspired by work from Drew Fudenberg and Andrew K. In the game, each of *k* players chooses whether to accelerate and whether to share information; Paradigm’s version omits the sharing choice.
+[Paradigm](https://www.paradigm.xyz/) recently released an article and accompanying game, [“The Game Theory of AI Pacing”](https://www.paradigm.xyz/research/pace/), inspired by [Drew Fudenberg and Andrew Koh’s paper](https://arxiv.org/abs/2609.28291). In the game, each of *k* players chooses whether to accelerate and whether to share information; Paradigm’s version omits the sharing choice.
 
 Inspired by the rationalist literature, this project trains an autoregressive agent with imitation learning and reinforcement learning (PPO) to navigate the trade-off between capability and safety. The results are preliminary.
 
